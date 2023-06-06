@@ -35,8 +35,11 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			// literal := string(ch) + string(l.ch)
-			tok = newToken(token.EQ, ch+l.ch)
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{
+				Type:    token.EQ,
+				Literal: literal,
+			}
 		}
 	case '+':
 		tok = newToken(token.PLUS, l.ch)
@@ -49,8 +52,11 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			// literal := string(ch) + string(l.ch)
-			tok = newToken(token.NOT_EQ, ch+l.ch)
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{
+				Type:    token.NOT_EQ,
+				Literal: literal,
+			}
 		}
 	case '/':
 		tok = newToken(token.SLASH, l.ch)
