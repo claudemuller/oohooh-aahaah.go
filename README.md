@@ -20,6 +20,12 @@ Is an interpreter for the [Monkey language](https://monkeylang.org/) built in Go
 
 ## Running the REPL
 
-```
+```bash
 make repl
+```
+
+## Running the tests
+
+```bash
+make test
 ```
