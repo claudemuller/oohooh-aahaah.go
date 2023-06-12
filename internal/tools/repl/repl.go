@@ -7,6 +7,7 @@ import (
 
 	"github.com/claudemuller/oohooh-aahaah-go/internal/pkg/evaluator"
 	"github.com/claudemuller/oohooh-aahaah-go/internal/pkg/lexer"
+	"github.com/claudemuller/oohooh-aahaah-go/internal/pkg/object"
 	"github.com/claudemuller/oohooh-aahaah-go/internal/pkg/parser"
 )
 
@@ -33,7 +34,9 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		evaluated := evaluator.Eval(program)
+		env := object.NewEnvironment()
+
+		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
