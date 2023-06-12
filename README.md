@@ -1,4 +1,4 @@
-# oohooh-aahaah
+# Oohooh-Aahaah Interpreter
 
 [![Go](https://github.com/claudemuller/oohooh-aahaah-go/actions/workflows/go.yml/badge.svg)](https://github.com/claudemuller/oohooh-aahaah-go/actions/workflows/go.yml)
 
