@@ -17,3 +17,9 @@
 
 ```
 Is an interpreter for the [Monkey language](https://monkeylang.org/) built in Go.
+
+## Running the REPL
+
+```
+make repl
+```
