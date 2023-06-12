@@ -9,6 +9,7 @@ import (
 	"github.com/claudemuller/oohooh-aahaah-go/internal/pkg/token"
 )
 
+// TODO: fix this uppercase for consts.
 const (
 	LOWEST      = iota + 1
 	EQUALS      // ==
