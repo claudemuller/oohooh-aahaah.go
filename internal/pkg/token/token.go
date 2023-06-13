@@ -41,6 +41,7 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
+	STRING   = "STRING"
 )
 
 func LookupIdent(ident string) TokenType {

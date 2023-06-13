@@ -89,12 +89,20 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return function
 		}
 
+		// // TODO: add error for not enough args.
+		// if len(node.Arguments) != len(function.Parameters) {
+		// 	// error
+		// }
+
 		args := evalExpressions(node.Arguments, env)
 		if len(args) == 1 && isError(args[0]) {
 			return args[0]
 		}
 
 		return applyFunction(function, args)
+
+	case *ast.StringLiteral:
+		return &object.String{Value: node.Value}
 	}
 
 	return nil

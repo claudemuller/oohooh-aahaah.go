@@ -226,10 +226,10 @@ func TestLetStatements(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		// {"let a = 5; a;", 5},
+		{"let a = 5; a;", 5},
 		{"let a = 5 * 5; a;", 25},
-		// {"let a = 5; let b = a; b;", 5},
-		// {"let a = 5; let b = a; let c = a + b + 5; c;", 15},
+		{"let a = 5; let b = a; b;", 5},
+		{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
 	}
 
 	for _, tt := range tests {
@@ -269,6 +269,7 @@ func TestFunctionApplication(t *testing.T) {
 		{"let double = fn(x) { x * 2; }; double(5);", 10},
 		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
 		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		// {"let add = fn(x, y) { x + y; }; add(5 + 5);", 20},
 		{"fn(x) { x; }(5)", 5},
 	}
 
@@ -285,6 +286,20 @@ func TestClosures(t *testing.T) {
    let addTwo = newAdder(2);
    addTwo(2);`
 	testIntegerObject(t, testEval(input), 4)
+}
+
+func TestStringLiteral(t *testing.T) {
+	input := `"Hello World!"`
+	evaluated := testEval(input)
+
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("object is not String. got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if str.Value != "Hello World!" {
+		t.Errorf("String has wrong value. got=%q", str.Value)
+	}
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {
