@@ -35,6 +35,7 @@ const (
 	RBRACE    = "}"
 	LBRACKET  = "["
 	RBRACKET  = "]"
+	COLON     = ":"
 	// Language keywords.
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
