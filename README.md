@@ -18,10 +18,24 @@
 ```
 Is an interpreter for the [Monkey language](https://monkeylang.org/) built in Go.
 
+## Usage
+
+One can use the REPL or feed a `.mon` file into the interpreter. After compiling the binary, use the interpreter like so:
+
+```bash
+ohah examples/add.mon
+```
+
 ## Running the REPL
 
 ```bash
 make repl
+```
+
+## Building the interpreter
+
+```bash
+make build
 ```
 
 ## Running the tests
