@@ -33,6 +33,8 @@ const (
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
+	LBRACKET  = "["
+	RBRACKET  = "]"
 	// Language keywords.
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
