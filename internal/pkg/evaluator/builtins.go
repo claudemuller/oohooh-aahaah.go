@@ -99,7 +99,7 @@ var builtins = map[string]*object.Builtin{
 	"push": {
 		Fn: func(args ...object.Object) object.Object {
 			if len(args) != 2 {
-				return newError("wrong number of arguments. got=%d, want=1", len(args))
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
 			}
 
 			if args[0].Type() != object.ARRAY_OBJ {
@@ -114,6 +114,29 @@ var builtins = map[string]*object.Builtin{
 			newElements[length] = args[1]
 
 			return &object.Array{Elements: newElements}
+		},
+	},
+
+	"filter": {
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+
+			if args[0].Type() != object.ARRAY_OBJ {
+				return newError("argument to `filter` must be ARRAY, got %s", args[0].Type())
+			}
+
+			if args[1].Type() != object.FUNCTION_OBJ {
+				return newError("argument to `filter` must be FUNCTION, got %s", args[1].Type())
+			}
+
+			// switch args[0].Type() {
+			// case object.STRING_OBJ:
+			//
+			// }
+
+			return NULL
 		},
 	},
 }

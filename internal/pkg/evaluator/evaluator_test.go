@@ -380,6 +380,10 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`rest([])`, nil},
 		{`push([], 1)`, []int{1}},
 		{`push(1, 1)`, "argument to `push` must be ARRAY, got INTEGER"},
+		{`filter(1)`, "wrong number of arguments. got=1, want=2"},
+		{`filter(1, [])`, "argument to `filter` must be ARRAY, got INTEGER"},
+		{`filter([], 1)`, "argument to `filter` must be FUNCTION, got INTEGER"},
+		{`filter([], fn(){})`, nil},
 	}
 
 	for _, tt := range tests {
