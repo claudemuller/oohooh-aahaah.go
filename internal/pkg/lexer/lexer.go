@@ -6,6 +6,7 @@ import "github.com/claudemuller/oohooh-aahaah-go/internal/pkg/token"
 	Next Features:
 		- Support Unicode
 		- Support other number types
+		- Add map, reduce etc. collection funcs
 */
 
 type Lexer struct {
