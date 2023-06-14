@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	NULL  = &object.Null{}
-	TRUE  = &object.Boolean{Value: true}
-	FALSE = &object.Boolean{Value: false}
+	nullObj  = &object.Null{}
+	trueObj  = &object.Boolean{Value: true}
+	falseObj = &object.Boolean{Value: false}
 )
 
 func Eval(node ast.Node, env *object.Environment) object.Object {
@@ -38,6 +38,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		if isError(val) {
 			return val
 		}
+
 		env.Set(node.Name.Value, val)
 
 	// Expressions.
@@ -80,6 +81,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	case *ast.FunctionLiteral:
 		params := node.Parameters
 		body := node.Body
+
 		return &object.Function{
 			Parameters: params,
 			Body:       body,
@@ -137,6 +139,7 @@ func applyFunction(fn object.Object, args []object.Object) object.Object {
 	case *object.Function:
 		extendedEnv := extendFunctionEnv(fn, args)
 		evaluated := Eval(fn.Body, extendedEnv)
+
 		return unwrapReturnValue(evaluated)
 
 	case *object.Builtin:
@@ -192,15 +195,15 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Obje
 		return Eval(ie.Alternative, env)
 	}
 
-	return NULL
+	return nullObj
 }
 
 func nativeBoolToBooleanObject(input bool) *object.Boolean {
 	if input {
-		return TRUE
+		return trueObj
 	}
 
-	return FALSE
+	return falseObj
 }
 
 func evalProgram(program *ast.Program, env *object.Environment) object.Object {
@@ -212,6 +215,7 @@ func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 		switch result := result.(type) {
 		case *object.ReturnValue:
 			return result.Value
+
 		case *object.Error:
 			return result
 		}
@@ -224,8 +228,10 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 	switch operator {
 	case "!":
 		return evalBangOperatorExpression(right)
+
 	case "-":
 		return evalMinusPrefixOperatorExpression(right)
+
 	default:
 		return newError("unknown operator: %s%s", operator, right.Type())
 	}
@@ -233,19 +239,22 @@ func evalPrefixExpression(operator string, right object.Object) object.Object {
 
 func evalBangOperatorExpression(right object.Object) object.Object {
 	switch right {
-	case TRUE:
-		return FALSE
-	case FALSE:
-		return TRUE
-	case NULL:
-		return TRUE
+	case trueObj:
+		return falseObj
+
+	case falseObj:
+		return trueObj
+
+	case nullObj:
+		return trueObj
+
 	default:
-		return FALSE
+		return falseObj
 	}
 }
 
 func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
-	if right.Type() != object.INTEGER_OBJ {
+	if right.Type() != object.IntegerObj {
 		return newError("unknown operator: -%s", right.Type())
 	}
 
@@ -256,16 +265,21 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 
 func evalInfixExpression(operator string, left, right object.Object) object.Object {
 	switch {
-	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
+	case left.Type() == object.IntegerObj && right.Type() == object.IntegerObj:
 		return evalIntegerInfixExpression(operator, left, right)
+
 	case operator == "==":
 		return nativeBoolToBooleanObject(left == right)
+
 	case operator == "!=":
 		return nativeBoolToBooleanObject(left != right)
+
 	case left.Type() != right.Type():
 		return newError("type mismatch: %s %s %s", left.Type(), operator, right.Type())
-	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
+
+	case left.Type() == object.StringObj && right.Type() == object.StringObj:
 		return evalStringInfixExpression(operator, left, right)
+
 	default:
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
@@ -289,20 +303,28 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 	switch operator {
 	case "+":
 		return &object.Integer{Value: leftVal + rightVal}
+
 	case "-":
 		return &object.Integer{Value: leftVal - rightVal}
+
 	case "*":
 		return &object.Integer{Value: leftVal * rightVal}
+
 	case "/":
 		return &object.Integer{Value: leftVal / rightVal}
+
 	case "<":
 		return nativeBoolToBooleanObject(leftVal < rightVal)
+
 	case ">":
 		return nativeBoolToBooleanObject(leftVal > rightVal)
+
 	case "==":
 		return nativeBoolToBooleanObject(leftVal == rightVal)
+
 	case "!=":
 		return nativeBoolToBooleanObject(leftVal != rightVal)
+
 	default:
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 	}
@@ -316,7 +338,7 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 
 		if result != nil {
 			rt := result.Type()
-			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ {
+			if rt == object.ReturnValueObj || rt == object.ErrorObj {
 				return result
 			}
 		}
@@ -339,10 +361,12 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 
 func evalIndexExpression(left, index object.Object) object.Object {
 	switch {
-	case left.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
+	case left.Type() == object.ArrayObj && index.Type() == object.IntegerObj:
 		return evalArrayIndexExpression(left, index)
-	case left.Type() == object.HASH_OBJ:
+
+	case left.Type() == object.HashObj:
 		return evalHashIndexExpression(left, index)
+
 	default:
 		return newError("index operator not supported: %s", left.Type())
 	}
@@ -350,11 +374,11 @@ func evalIndexExpression(left, index object.Object) object.Object {
 
 func evalArrayIndexExpression(array, index object.Object) object.Object {
 	arrayObj := array.(*object.Array)
-	idx := index.(*object.Integer).Value
 	max := int64(len(arrayObj.Elements) - 1)
 
+	idx := index.(*object.Integer).Value
 	if idx < 0 || idx > max {
-		return NULL
+		return nullObj
 	}
 
 	return arrayObj.Elements[idx]
@@ -369,7 +393,7 @@ func evalHashLiteral(node *ast.HashLiteral, env *object.Environment) object.Obje
 			return key
 		}
 
-		hashKey, ok := key.(object.Hashable)
+		hashKey, ok := key.(object.Hasher)
 		if !ok {
 			return newError("unusable as hash key: %s", key.Type())
 		}
@@ -389,14 +413,14 @@ func evalHashLiteral(node *ast.HashLiteral, env *object.Environment) object.Obje
 func evalHashIndexExpression(hash, index object.Object) object.Object {
 	hashObject := hash.(*object.Hash)
 
-	key, ok := index.(object.Hashable)
+	key, ok := index.(object.Hasher)
 	if !ok {
 		return newError("unusable as hash key: %s", index.Type())
 	}
 
 	pair, ok := hashObject.Pairs[key.HashKey()]
 	if !ok {
-		return NULL
+		return nullObj
 	}
 
 	return pair.Value
@@ -408,12 +432,15 @@ func newError(format string, a ...interface{}) *object.Error {
 
 func isTruthy(obj object.Object) bool {
 	switch obj {
-	case NULL:
+	case nullObj:
 		return false
-	case TRUE:
+
+	case trueObj:
 		return true
-	case FALSE:
+
+	case falseObj:
 		return false
+
 	default:
 		return true
 	}
@@ -421,7 +448,7 @@ func isTruthy(obj object.Object) bool {
 
 func isError(obj object.Object) bool {
 	if obj != nil {
-		return obj.Type() == object.ERROR_OBJ
+		return obj.Type() == object.ErrorObj
 	}
 
 	return false

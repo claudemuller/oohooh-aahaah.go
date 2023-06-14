@@ -249,8 +249,8 @@ func (fl *FunctionLiteral) TokenLiteral() string {
 }
 func (fl *FunctionLiteral) String() string {
 	var out strings.Builder
-
 	var params []string
+
 	for _, p := range fl.Parameters {
 		params = append(params, p.String())
 	}
@@ -276,8 +276,8 @@ func (ce *CallExpression) TokenLiteral() string {
 }
 func (ce *CallExpression) String() string {
 	var out strings.Builder
-
 	var args []string
+
 	for _, a := range ce.Arguments {
 		args = append(args, a.String())
 	}
@@ -314,8 +314,8 @@ func (al *ArrayLiteral) TokenLiteral() string {
 }
 func (al *ArrayLiteral) String() string {
 	var out strings.Builder
-
 	var elements []string
+
 	for _, el := range al.Elements {
 		elements = append(elements, el.String())
 	}
@@ -365,8 +365,10 @@ func (hl *HashLiteral) String() string {
 	for key, value := range hl.Pairs {
 		pairs = append(pairs, key.String()+":"+value.String())
 	}
+
 	out.WriteString("{")
 	out.WriteString(strings.Join(pairs, ", "))
 	out.WriteString("}")
+
 	return out.String()
 }

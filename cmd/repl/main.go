@@ -11,7 +11,8 @@ import (
 func main() {
 	user, err := user.Current()
 	if err != nil {
-		panic(err)
+		fmt.Printf("error retrieving system user: %v", err)
+		os.Exit(1)
 	}
 
 	fmt.Printf("Hello %s! This is the Monkey programming language!\n", user.Username)

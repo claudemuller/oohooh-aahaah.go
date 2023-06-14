@@ -11,16 +11,16 @@ import (
 type ObjectType string
 
 const (
-	INTEGER_OBJ      = "INTEGER"
-	BOOLEAN_OBJ      = "BOOLEAN"
-	NULL_OBJ         = "NULL"
-	RETURN_VALUE_OBJ = "RETURN_VALUE"
-	ERROR_OBJ        = "ERROR"
-	FUNCTION_OBJ     = "FUNCTION"
-	STRING_OBJ       = "STRING"
-	BUILTIN_OBJ      = "BUILTIN"
-	ARRAY_OBJ        = "ARRAY"
-	HASH_OBJ         = "HASH"
+	IntegerObj     = "INTEGER"
+	BooleanObj     = "BOOLEAN"
+	NullObj        = "NULL"
+	ReturnValueObj = "RETURN_VALUE"
+	ErrorObj       = "ERROR"
+	FunctionObj    = "FUNCTION"
+	StringObj      = "STRING"
+	BuiltinObj     = "BUILTIN"
+	ArrayObj       = "ARRAY"
+	HashObj        = "HASH"
 )
 
 type Object interface {
@@ -33,7 +33,7 @@ type Integer struct {
 }
 
 func (i *Integer) Type() ObjectType {
-	return INTEGER_OBJ
+	return IntegerObj
 }
 func (i *Integer) Inspect() string {
 	return fmt.Sprintf("%d", i.Value)
@@ -44,7 +44,7 @@ type Boolean struct {
 }
 
 func (b *Boolean) Type() ObjectType {
-	return BOOLEAN_OBJ
+	return BooleanObj
 }
 func (b *Boolean) Inspect() string {
 	return fmt.Sprintf("%t", b.Value)
@@ -53,7 +53,7 @@ func (b *Boolean) Inspect() string {
 type Null struct{}
 
 func (n *Null) Type() ObjectType {
-	return NULL_OBJ
+	return NullObj
 }
 func (n *Null) Inspect() string {
 	return "null"
@@ -64,7 +64,7 @@ type ReturnValue struct {
 }
 
 func (rv *ReturnValue) Type() ObjectType {
-	return RETURN_VALUE_OBJ
+	return ReturnValueObj
 }
 func (rv *ReturnValue) Inspect() string {
 	return rv.Value.Inspect()
@@ -75,7 +75,7 @@ type Error struct {
 }
 
 func (e *Error) Type() ObjectType {
-	return ERROR_OBJ
+	return ErrorObj
 }
 func (e *Error) Inspect() string {
 	return "ERROR: " + e.Message
@@ -88,11 +88,12 @@ type Function struct {
 }
 
 func (f *Function) Type() ObjectType {
-	return FUNCTION_OBJ
+	return FunctionObj
 }
 func (f *Function) Inspect() string {
 	var out strings.Builder
-	var params []string
+
+	params := make([]string, 0, len(f.Parameters))
 
 	for _, p := range f.Parameters {
 		params = append(params, p.String())
@@ -113,7 +114,7 @@ type String struct {
 }
 
 func (s *String) Type() ObjectType {
-	return STRING_OBJ
+	return StringObj
 }
 func (s *String) Inspect() string {
 	return s.Value
@@ -126,7 +127,7 @@ type Builtin struct {
 }
 
 func (b *Builtin) Type() ObjectType {
-	return BUILTIN_OBJ
+	return BuiltinObj
 }
 func (b *Builtin) Inspect() string {
 	return "builtin function"
@@ -137,11 +138,12 @@ type Array struct {
 }
 
 func (a *Array) Type() ObjectType {
-	return ARRAY_OBJ
+	return ArrayObj
 }
 func (a *Array) Inspect() string {
 	var out strings.Builder
-	var elements []string
+
+	elements := make([]string, 0, len(a.Elements))
 
 	for _, el := range a.Elements {
 		elements = append(elements, el.Inspect())
@@ -154,7 +156,7 @@ func (a *Array) Inspect() string {
 	return out.String()
 }
 
-type Hashable interface {
+type Hasher interface {
 	HashKey() HashKey
 }
 
@@ -168,11 +170,12 @@ type Hash struct {
 }
 
 func (h *Hash) Type() ObjectType {
-	return HASH_OBJ
+	return HashObj
 }
 func (h *Hash) Inspect() string {
 	var out strings.Builder
-	var pairs []string
+
+	pairs := make([]string, 0, len(h.Pairs))
 
 	for _, pair := range h.Pairs {
 		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()))

@@ -524,8 +524,8 @@ func TestHashLiterals(t *testing.T) {
 		(&object.String{Value: "two"}).HashKey():   2,
 		(&object.String{Value: "three"}).HashKey(): 3,
 		(&object.Integer{Value: 4}).HashKey():      4,
-		TRUE.HashKey():                             5,
-		FALSE.HashKey():                            6,
+		trueObj.HashKey():                          5,
+		falseObj.HashKey():                         6,
 	}
 
 	if len(result.Pairs) != len(expected) {
@@ -627,8 +627,8 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 }
 
 func testNullObject(t *testing.T, obj object.Object) bool {
-	if obj != NULL {
-		t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)
+	if obj != nullObj {
+		t.Errorf("object is not nullObj. got=%T (%+v)", obj, obj)
 		return false
 	}
 	return true
